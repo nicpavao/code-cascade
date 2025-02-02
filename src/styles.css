@@ -1,0 +1,116 @@
+/* General Page Styling */
+body {
+    background-color: #1a1a1a;
+    color: white;
+    font-family: Arial, sans-serif;
+    text-align: center;
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+  }
+  
+  /* Title and Subtitle */
+  h1 {
+    font-size: 48px;
+    font-weight: bold;
+    color: #f94f4f;
+  }
+  
+  p {
+    font-size: 18px;
+    font-style: italic;
+    color: #bbb;
+  }
+  
+/* Puzzle Container */
+.puzzle-container {
+    background-color: #333;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.3);
+    text-align: center;
+    width: 90%;
+    max-width: 400px;
+    margin: 20px auto;
+  }
+  
+  /* Input Box */
+  .input-box {
+    width: 90%;
+    max-width: 350px;
+    padding: 10px;
+    font-size: 16px;
+    border-radius: 5px;
+    border: none;
+    text-align: center;
+  }
+  
+  .puzzle-text {
+    font-size: 18px;
+    font-weight: bold;
+    margin-bottom: 10px;
+  }
+
+/* Submit Button */
+.submit-button {
+    width: 80%; /* Reduce width */
+    max-width: 200px; /* Set max width */
+    background-color: #f94f4f;
+    color: white;
+    padding: 8px; /* Reduce padding */
+    margin-top: 12px; /* Slightly reduce margin */
+    border: none;
+    border-radius: 5px;
+    font-size: 16px; /* Reduce font size */
+    cursor: pointer;
+  }
+  
+  .submit-button:hover {
+    background-color: #d23f3f;
+  }
+
+  /* Message Styling */
+.message {
+    font-size: 16px;
+    font-weight: bold;
+    margin-top: 10px;
+  }
+
+  /* Invite Section */
+.invite-container {
+    background-color: #333;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.3);
+    text-align: center;
+    width: 90%;
+    max-width: 400px;
+    margin: 20px auto;
+  }
+  
+  .invite-container h2 {
+    font-size: 18px;
+    font-weight: bold;
+    margin-bottom: 15px;
+  }
+
+  /* Invite Button */
+  .invite-button {
+    width: 80%; /* Reduce width */
+    max-width: 200px; /* Set max width */
+    background-color: #f94f4f;
+    color: white;
+    padding: 8px; /* Reduce padding */
+    margin-top: 12px; /* Slightly reduce margin */
+    border: none;
+    border-radius: 5px;
+    font-size: 16px; /* Reduce font size */
+    cursor: pointer;
+  }
+  
+  .invite-button:hover {
+    background-color:  #d23f3f;
+  }
+  
