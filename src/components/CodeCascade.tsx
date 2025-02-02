@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import "../styles.css"; // Import the CSS file
 
 function CodeCascade() {
@@ -11,16 +11,25 @@ function CodeCascade() {
   const [leaderboard, setLeaderboard] = useState<{ name: string; score: number }[]>([]);
   const [activeTab, setActiveTab] = useState("blocks");
 
-  const puzzles = [
-    { cipher: "VJKU KU C RTQEGUUKQP", solution: "THIS IS A PROCESSION" },
-    { cipher: "GUVF VF N GRFG", solution: "THIS IS A TEST" },
-    { cipher: "WKH TXLFN EURZQ IRA MXPSV RYHU WKH ODCB GRJ", solution: "THE QUICK BROWN FOX JUMPS OVER THE LAZY DOG" },
-    { cipher: "YMNX NX F QJXY", solution: "THIS IS A CODE" }
-  ];
+    const [cipher, setCipher] = useState("");
 
-  const [currentPuzzle, setCurrentPuzzle] = useState(() => {
-    return puzzles[Math.floor(Math.random() * puzzles.length)];
-  });
+    useEffect(() => {
+    fetchPuzzle();
+    }, []);
+
+    const fetchPuzzle = async () => {
+    try {
+        const response = await fetch("http://127.0.0.1:5000/get_puzzle");
+        const data = await response.json();
+        setCipher(data.cipher);
+        setSolved(false);
+        setSolution("");
+        setMessage("");
+    } catch (error) {
+        console.error("Error fetching puzzle:", error);
+    }
+    };
+
 
   useEffect(() => {
     const storedLeaderboard = localStorage.getItem("leaderboard");
@@ -33,15 +42,24 @@ function CodeCascade() {
     localStorage.setItem("leaderboard", JSON.stringify(leaderboard));
   }, [leaderboard]);
 
-  const handleSubmit = () => {
-    if (solution.trim().toUpperCase() === currentPuzzle.solution) {
-      setMessage("🎉 Correct! You cracked the code!");
-      setSolved(true);
-      setScore(score + 2);
-      const updatedLeaderboard = [...leaderboard, { name: "You", score: score + 2 }];
-      setLeaderboard(updatedLeaderboard);
-    } else {
-      setMessage("❌ Incorrect. Try again!");
+  const handleSubmit = async () => {
+    try {
+      const response = await fetch("http://127.0.0.1:5000/check_solution", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ solution }),
+      });
+      const data = await response.json();
+      setMessage(data.message);
+  
+      if (data.correct) {
+        setSolved(true);
+        setScore(score + 2);
+        const updatedLeaderboard = [...leaderboard, { name: "You", score: score + 2 }];
+        setLeaderboard(updatedLeaderboard);
+      }
+    } catch (error) {
+      console.error("Error checking solution:", error);
     }
   };
 
@@ -80,7 +98,7 @@ function CodeCascade() {
           
           {activeTab === "blocks" && (
             <div className="puzzle-container">
-              <p className="puzzle-text">Decode this: {currentPuzzle.cipher}</p>
+              <p className="puzzle-text">Decode this: {cipher}</p>
               <input
                 type="text"
                 value={solution}
