@@ -5,33 +5,66 @@ import random
 app = Flask(__name__)
 CORS(app, origins=["http://localhost:5173"])
 
-puzzles = [
-    {"cipher": "VJKU KU C RTQEGUUKQP", "solution": "THIS IS A PROCESSION"},
-    {"cipher": "GUVF VF N GRFG", "solution": "THIS IS A TEST"},
-    {"cipher": "WKH TXLFN EURZQ IRA MXPSV RYHU WKH ODCB GRJ", "solution": "THE QUICK BROWN FOX JUMPS OVER THE LAZY DOG"},
-    {"cipher": "YMNX NX F QJXY", "solution": "THIS IS A CODE"}
-]
+leaderboard = []  # Temporary in-memory storage (replace with a database later)
 
 @app.route("/")
 def home():
     return jsonify({"message": "Backend is running!"})
 
+puzzles = [
+    {"cipher": "7 + 3", "solution": "10"},
+    {"cipher": "15 - 6", "solution": "9"},
+    {"cipher": "8 * 4", "solution": "32"},
+    {"cipher": "81 / 9", "solution": "9"},
+    {"cipher": "12 + 25", "solution": "37"},
+    {"cipher": "100 - 47", "solution": "53"},
+    {"cipher": "9 * 7", "solution": "63"},
+    {"cipher": "144 / 12", "solution": "12"},
+    {"cipher": "18 + 42", "solution": "60"},
+    {"cipher": "56 - 19", "solution": "37"}
+    ]
+
 @app.route("/get_puzzle", methods=["GET"])
 def get_puzzle():
-    puzzle = random.choice(puzzles)
-    return jsonify({"cipher": puzzle["cipher"]})
+    return jsonify({"cipher": random.choice(puzzles)["cipher"]})
 
 @app.route("/check_solution", methods=["POST"])
 def check_solution():
     data = request.json
     user_answer = data.get("solution", "").strip().upper()
-    
+
     for puzzle in puzzles:
         if user_answer == puzzle["solution"]:
             return jsonify({"correct": True, "message": "🎉 Correct! You cracked the code!"})
     
     return jsonify({"correct": False, "message": "❌ Incorrect. Try again!"})
 
+@app.route("/get_leaderboard", methods=["GET"])
+def get_leaderboard():
+    return jsonify({"leaderboard": sorted(leaderboard, key=lambda x: x["score"], reverse=True)})
+
+@app.route("/update_leaderboard", methods=["POST"])
+@app.route("/update_leaderboard", methods=["POST"])
+def update_leaderboard():
+    data = request.json
+    name = data.get("name", "Anonymous")
+    score = data.get("score", 0)
+
+    # Check if user already exists in leaderboard
+    existing_user = next((player for player in leaderboard if player["name"] == name), None)
+
+    if existing_user:
+        # Update score if the new one is higher
+        existing_user["score"] = max(existing_user["score"], score)
+    else:
+        # Add new entry if user doesn't exist
+        leaderboard.append({"name": name, "score": score})
+
+    # Sort leaderboard by highest score
+    leaderboard.sort(key=lambda x: x["score"], reverse=True)
+
+    return jsonify({"message": "Leaderboard updated!", "leaderboard": leaderboard})
+
+
 if __name__ == "__main__":
     app.run(debug=True)
-    home()
