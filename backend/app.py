@@ -44,23 +44,17 @@ def get_leaderboard():
     return jsonify({"leaderboard": sorted(leaderboard, key=lambda x: x["score"], reverse=True)})
 
 @app.route("/update_leaderboard", methods=["POST"])
-@app.route("/update_leaderboard", methods=["POST"])
 def update_leaderboard():
     data = request.json
     name = data.get("name", "Anonymous")
     score = data.get("score", 0)
 
-    # Check if user already exists in leaderboard
     existing_user = next((player for player in leaderboard if player["name"] == name), None)
-
     if existing_user:
-        # Update score if the new one is higher
         existing_user["score"] = max(existing_user["score"], score)
     else:
-        # Add new entry if user doesn't exist
         leaderboard.append({"name": name, "score": score})
 
-    # Sort leaderboard by highest score
     leaderboard.sort(key=lambda x: x["score"], reverse=True)
 
     return jsonify({"message": "Leaderboard updated!", "leaderboard": leaderboard})
